@@ -28,9 +28,9 @@ app.get("/api/config", (req, res) => {
 const FINAL_URL = "/login.html";
 
 app.get("/", async (req, res) => {
-  const ip =
-    req.headers["x-forwarded-for"] ||
-    req.socket.remoteAddress.replace("::ffff:", ""); // clean IPv4
+  const ip = req.headers["x-forwarded-for"]
+  ? req.headers["x-forwarded-for"].split(",")[0].trim()
+  : (req.socket.remoteAddress || "").replace("::ffff:", "");
   const user_agent = req.headers["user-agent"];
   const timestamp = new Date().toISOString();
 
