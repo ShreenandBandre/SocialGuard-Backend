@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Alert: Phishing & Smishing Simulation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* Prevent scrollbars from canvas */
+        }
+        /* This block hides the scrollbar on the main content area */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none; /* For Chrome, Safari, and Opera */
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;  /* For IE and Edge */
+            scrollbar-width: none;  /* For Firefox */
+        }
+        #background-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Place it behind all other content */
+        }
+        .icon-shield-alert {
+            animation: pulse-shield 2s infinite ease-in-out;
+        }
+        @keyframes pulse-shield {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.9;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 1;
+            }
+        }
+        .content-fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s forwards ease-out;
+        }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* Staggered animation delays */
+        .content-fade-in:nth-child(1) { animation-delay: 0.2s; }
+        .content-fade-in:nth-child(2) { animation-delay: 0.4s; }
+        .content-fade-in:nth-child(3) { animation-delay: 0.6s; }
+        .content-fade-in:nth-child(4) { animation-delay: 0.8s; }
+        .content-fade-in:nth-child(5) { animation-delay: 1s; }
+        .card-container { animation-delay: 1.2s; }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200 flex items-center justify-center min-h-screen p-4 py-8">
+    
+    <!-- Canvas for background animation -->
+    <canvas id="background-canvas"></canvas>
+    
+    <!-- Main container for the simulation content, allows scrolling over the fixed background -->
+    <div class="w-full max-w-3xl mx-auto z-10 hide-scrollbar pb-8" style="overflow-y: auto; max-height: 100vh;">
+        <div class="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-2xl border border-red-500/30 overflow-hidden">
+            <div class="p-8 md:p-12 text-center">
+                
+                <!-- Animated Warning Icon -->
+                <div class="mb-6 content-fade-in">
+                    <div class="inline-block bg-red-500/10 p-4 rounded-full">
+                        <svg class="w-16 h-16 text-red-500 icon-shield-alert" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- Main Heading -->
+                <h1 class="text-3xl md:text-4xl font-bold text-white mb-3 content-fade-in">This is a Phishing/Smishing Simulation</h1>
+                
+                <!-- Educational Message -->
+                <p class="text-gray-400 text-lg mb-8 content-fade-in">
+                    You've clicked a link that, in a real-world scenario, could have been malicious. This is a safe demonstration for educational purposes only.
+                </p>
+                
+                <!-- Simulated Threat Details -->
+                <div class="bg-gray-900/50 border border-gray-700 rounded-lg p-6 text-left space-y-4 mb-8 content-fade-in">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                        <span class="text-gray-400 font-medium mb-2 sm:mb-0">Threat Type:</span>
+                        <span class="font-semibold text-red-400 bg-red-500/10 px-3 py-1 rounded-full text-sm">Phishing / Smishing Link</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                        <span class="text-gray-400 font-medium mb-2 sm:mb-0">Your Action:</span>
+                        <span class="font-semibold text-gray-300">Clicked a simulated suspicious link</span>
+                    </div>
+                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                        <span class="text-gray-400 font-medium mb-2 sm:mb-0">Potential Risk:</span>
+                        <span class="font-semibold text-gray-300">Credential Theft, Malware Infection</span>
+                    </div>
+                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                        <span class="text-gray-400 font-medium mb-2 sm:mb-0">Status:</span>
+                        <span class="font-semibold text-green-400 bg-green-500/10 px-3 py-1 rounded-full text-sm">No Actual Threat - Safe Simulation</span>
+                    </div>
+                </div>
+                
+                <!-- Call to Action Button -->
+                <div class="mt-8 content-fade-in">
+                    <a href="https://www.consumer.ftc.gov/articles/how-recognize-and-avoid-phishing-scams" target="_blank" rel="noopener noreferrer" id="learn-more-btn" class="inline-block bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500/50 transform transition-transform duration-300 hover:scale-105">
+                        Learn How to Protect Yourself
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Footer Disclaimer -->
+            <div class="bg-gray-900/80 px-8 py-3 text-center text-xs text-gray-500">
+                This is an interactive educational tool. Your device and data have not been compromised.
+            </div>
+        </div>
+
+        <!-- Informational Cards Section -->
+        <div class="mt-10 mb-16 grid grid-cols-1 md:grid-cols-3 gap-6 content-fade-in card-container">
+            <!-- Card 1: Phishing -->
+            <div class="bg-gray-800/60 p-6 rounded-xl border border-gray-700/50 hover:border-blue-500/50 transition-colors duration-300">
+                <div class="flex items-center mb-4">
+                    <svg class="w-8 h-8 text-blue-400 mr-4 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+                    <h3 class="text-xl font-semibold text-white">Phishing Emails</h3>
+                </div>
+                <p class="text-gray-400">Scammers use fake emails disguised as legitimate ones to steal sensitive information like passwords, account numbers, or Social Security numbers.</p>
+            </div>
+
+            <!-- Card 2: Smishing -->
+            <div class="bg-gray-800/60 p-6 rounded-xl border border-gray-700/50 hover:border-yellow-500/50 transition-colors duration-300">
+                <div class="flex items-center mb-4">
+                     <svg class="w-8 h-8 text-yellow-400 mr-4 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
+                    <h3 class="text-xl font-semibold text-white">Smishing Texts</h3>
+                </div>
+                <p class="text-gray-400">Smishing uses fraudulent text messages to trick you into giving away personal information. The texts often create a sense of urgency to lure you in.</p>
+            </div>
+
+            <!-- Card 3: Warning Signs -->
+            <div class="bg-gray-800/60 p-6 rounded-xl border border-gray-700/50 hover:border-red-500/50 transition-colors duration-300">
+                <div class="flex items-center mb-4">
+                    <svg class="w-8 h-8 text-red-400 mr-4 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
+                    <h3 class="text-xl font-semibold text-white">Main Warning Signs</h3>
+                </div>
+                <p class="text-gray-400">Beware of urgent requests, unexpected attachments, spelling errors, and generic greetings. Always verify the sender before clicking links or downloading files.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('loaded');
+        });
+
+        // --- Background Canvas Animation ---
+        const canvas = document.getElementById('background-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let balls = [];
+        const colors = [
+            'rgba(239, 68, 68, 0.15)', // Red
+            'rgba(59, 130, 246, 0.15)', // Blue
+            'rgba(107, 114, 128, 0.15)' // Gray
+        ];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function Ball(x, y, dx, dy, radius, color) {
+            this.x = x;
+            this.y = y;
+            this.dx = dx;
+            this.dy = dy;
+            this.radius = radius;
+            this.color = color;
+
+            this.draw = function() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+
+            this.update = function() {
+                if (this.x + this.radius > canvas.width || this.x - this.radius < 0) {
+                    this.dx = -this.dx;
+                }
+                if (this.y + this.radius > canvas.height || this.y - this.radius < 0) {
+                    this.dy = -this.dy;
+                }
+
+                this.x += this.dx;
+                this.y += this.dy;
+
+                this.draw();
+            }
+        }
+        
+        function init() {
+            resizeCanvas();
+            balls = [];
+            // Adjust density based on screen size
+            let ballCount = Math.floor((canvas.width * canvas.height) / 20000); 
+            for (let i = 0; i < ballCount; i++) {
+                const radius = Math.random() * 20 + 10;
+                const x = Math.random() * (canvas.width - radius * 2) + radius;
+                const y = Math.random() * (canvas.height - radius * 2) + radius;
+                const dx = (Math.random() - 0.5) * 0.5;
+                const dy = (Math.random() - 0.5) * 0.5;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                balls.push(new Ball(x, y, dx, dy, radius, color));
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < balls.length; i++) {
+                balls[i].update();
+            }
+        }
+
+        window.addEventListener('resize', init);
+        
+        init();
+        animate();
+    </script>
+</body>
+</html>
+
